@@ -105,7 +105,7 @@ else:
     if (aws_access_key is None or aws_access_key == ""):
         logOut("aws_access_key must be specified in conf file " +
                "for S3 access")
-        exit()
+        logOut("Defaulting to writing to Log File")
 
 if "aws_secret_key" in confJson and confJson["aws_secret_key"] is not None:
     aws_secret_key = confJson["aws_secret_key"]
@@ -114,7 +114,7 @@ else:
     if (aws_secret_key is None or aws_secret_key == ""):
         logOut("aws_secret_key must be specified in conf file " +
                "for S3 access")
-        exit()
+        logOut("Defaulting to writing to Log File")
 
 if "bucket_name" in confJson and confJson["bucket_name"] is not None:
     bucket_name = confJson["bucket_name"]
@@ -123,7 +123,7 @@ else:
     if (bucket_name is None or bucket_name == ""):
         logOut("bucket_name must be specified in conf file " +
                "for S3 access")
-        exit()
+        logOut("Defaulting to writing to Log File")
 
 if "delta" in confJson and confJson["delta"] is not None:
     delta = int(confJson["delta"])
@@ -244,9 +244,14 @@ def pullRequests(curSite, delta, token, key=None, apiMode=None):
     from_time = until_time - timedelta(minutes=delta)
     until_time = calendar.timegm(until_time.utctimetuple())
     from_time = calendar.timegm(from_time.utctimetuple())
+    from_pretty = \
+        datetime.utcfromtimestamp(from_time).strftime('%Y-%m-%d %H:%M:%S')
+    until_pretty = \
+        datetime.utcfromtimestamp(until_time).strftime('%Y-%m-%d %H:%M:%S')
 
     logOut("SiteName: %s" % site_name)
-    logOut("From: %s\nUntil:%s" % (from_time, until_time))
+    logOut("From: %s" % (from_pretty))
+    logOut("Until: %s" % (until_pretty))
 
     # Loop across all the data and output it in one big JSON object
     if apiMode == "apitoken":
@@ -348,10 +353,17 @@ def pullRequests(curSite, delta, token, key=None, apiMode=None):
     totalRequests = len(allRequests)
     logOut("Total Requests Pulled: %s" % totalRequests)
     writeStart = timer()
-    # for curEvent in allRequests:
-    #     writeToS3(curEvent)
-    s3FileName = "{}_{}_{}.json".format(site_name, from_time, until_time)
-    writeToS3(allRequests, s3FileName)
+
+    from_s3 = \
+        datetime.utcfromtimestamp(from_time).strftime('%Y_%m_%d-%H-%M-%S')
+    until_s3 = \
+        datetime.utcfromtimestamp(until_time).strftime('%Y_%m_%d-%H-%M-%S')
+    s3FileName = "{}_{}_TO_{}.json".format(site_name, from_s3, until_s3)
+    if aws_access_key is None or aws_secret_key is None or bucket_name is None:
+        for curEvent in allRequests:
+            logOut(curEvent)
+    else:
+        writeToS3(allRequests, s3FileName)
     writeEnd = timer()
     writeTime = writeEnd - writeStart
     writeTimeResult = round(writeTime, 2)
