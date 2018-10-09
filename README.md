@@ -17,7 +17,7 @@ python sigsci-extract_s3.py --config conf.json
 | apitoken | If this is provided it will be used INSTEAD of your password. If set you can leave password empty |
 | corp_name | This is the API name of your corp. You can find it in one of the dashboard URLS |
 | dash_sites | This is the array of API Names of your dashboard sites. You can put 1 or more in this list to pull data from multiple sites |
-| deleta | This is the delta in minutes to pull data. Default is 5 and can be adjusted. Whatever your delta is, is how often you should run the script. You can not do a value less than 1 |
+| delta | This is the delta in minutes to pull data. Default is 5 and can be adjusted. Whatever your delta is, is how often you should run the script. You can not do a value less than 1 |
 | aws_access_key | Your AWS S3 API Access Key |
 | aws_secret_key | Your AWS S3 API Secret Key |
 | bucket_name | Name of the Bucket to save your results in. default filename is `sitename_fromtime_untiltime.json` |
