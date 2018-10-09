@@ -1,0 +1,11 @@
+{
+	"email":"USER@DOMAIN.COM",
+	"password": "PASSWORD_OR",
+	"apitoken": "APITOKEN",
+	"corp_name": "CORPNAME",
+	"dash_sites": ["SITENAMEA", "SITENAMEB"],
+	"delta": "5",
+	"aws_access_key":"KEYHERE",
+	"aws_secret_key": "SECRETHERE",
+	"bucket_name": "BUCKETNAME"
+}
